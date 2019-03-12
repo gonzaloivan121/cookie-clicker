@@ -8,6 +8,9 @@ var hoverSound;
 var selectSound;
 var cookie;
 var logo;
+var google;
+var googleShadow;
+var signedIn = false;
 
 export default class MenuScene extends Phaser.Scene {
 	constructor(key) {
@@ -17,10 +20,20 @@ export default class MenuScene extends Phaser.Scene {
 
 	update() {
 		cookie.angle += 0.25;
-
 	}
 
 	create() {
+
+		var auth = gapi.auth2.getAuthInstance();
+
+		console.log(auth)
+
+		if (auth.isSignedIn.Ab) {
+			signedIn = true;
+		} else {
+			signedIn = false;
+		}
+
 		hoverSound = this.sound.add('hover');
 		selectSound = this.sound.add('select');
 		hoverSound.volume  = 0.05;
@@ -48,7 +61,6 @@ export default class MenuScene extends Phaser.Scene {
 			delay: 1000,
 			ease: 'Expo.easeOut'
 		});
-		console.log(logo)
 
 		mainMenu.bg = this.add.graphics();
 		mainMenu.bg.fillStyle(0x333333);
@@ -60,6 +72,81 @@ export default class MenuScene extends Phaser.Scene {
 			mainMenu.txt[3] = this.add.text(-v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT, mainMenu.txt[2].y + v.MENU_PADDING_BOTTOM, "Extras",   v.TEXT_STYLE);
 			mainMenu.txt[4] = this.add.text(-v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT, mainMenu.txt[3].y + v.MENU_PADDING_BOTTOM, "Salir",    v.TEXT_STYLE);
 
+		googleShadow = this.add.image(-v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT, 532, 'google_signin');
+		googleShadow.tint = 0x000000;
+		googleShadow.alpha = 0.6;
+
+		if (!signedIn) {
+			google = this.add.image(-v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT, 530, 'google_signin');
+		} else {
+			google = this.add.image(-v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT, 530, 'google_signout');
+		}
+
+		google.setInteractive();
+
+		google.on('pointerover', () => {
+			console.log("Hover on Google Button")
+
+			this.tweens.add({
+				targets: googleShadow,
+				y: google.y + 7,
+				duration: v.FADE_TIME,
+				ease: 'Expo.easeOut'
+			});
+			
+			hoverSound.play();
+		}, this);
+
+		google.on('pointerout', () => {
+			console.log("Hover out of Google Button")
+
+			this.tweens.add({
+				targets: googleShadow,
+				y: google.y + 2,
+				duration: v.FADE_TIME,
+				ease: 'Expo.easeOut'
+			});
+		}, this);
+
+
+		google.on('pointerdown', () => {
+			var authInstance = gapi.auth2.getAuthInstance();
+
+			if (authInstance.isSignedIn.Ab) {
+
+				authInstance.signOut();
+				signedIn = false;
+				google.setTexture("google_signin");
+				console.log("Sesión Cerrada");
+			} else {
+
+				authInstance.signIn();
+				signedIn = true;
+				google.setTexture("google_signout");
+				console.log("Sesión Iniciada");
+			}
+		}, this);
+
+
+
+
+
+		this.tweens.add({
+			targets: google,
+			x: 155,
+			duration: v.FADE_TIME,
+			delay: v.FADE_DELAY,
+			ease: 'Expo.easeOut'
+		});
+		this.tweens.add({
+			targets: googleShadow,
+			x: 155,
+			duration: v.FADE_TIME,
+			delay: v.FADE_DELAY,
+			ease: 'Expo.easeOut'
+		});
+
+
 		///////////// sliding background & text /////////////
 		this.tweens.add({
 			targets: mainMenu.bg,
@@ -70,7 +157,7 @@ export default class MenuScene extends Phaser.Scene {
 		});
 		this.tweens.add({
 			targets: mainMenu.txt,
-			x:  v.MENU_PADDING_LEFT,
+			x: v.MENU_PADDING_LEFT,
 			duration: v.FADE_TIME,
 			delay: v.FADE_DELAY,
 			ease: 'Expo.easeOut'
@@ -83,6 +170,18 @@ export default class MenuScene extends Phaser.Scene {
 
 			this.tweens.add({
 				targets: mainMenu.txt,
+				x: -v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT,
+				duration: v.FADE_TIME,
+				ease: 'Expo.easeIn'
+			});
+			this.tweens.add({
+				targets: google,
+				x: -v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT,
+				duration: v.FADE_TIME,
+				ease: 'Expo.easeIn'
+			});
+			this.tweens.add({
+				targets: googleShadow,
 				x: -v.WORLD_WIDTH / 2 + v.MENU_PADDING_LEFT,
 				duration: v.FADE_TIME,
 				ease: 'Expo.easeIn'
@@ -122,6 +221,8 @@ export default class MenuScene extends Phaser.Scene {
 				button.setStroke('0x111111', 0);
 			}, this);
 		});
+
+		//var googleButton = 
 	}
 
 

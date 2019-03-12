@@ -56,6 +56,11 @@ export default class Loader extends Phaser.Scene {
       this.load.image('cookie_cartoon', 'assets/images/cookie_cartoon.png');
       this.load.image('logo_cookie', 'assets/images/cookielogo.png');
 
+      // Load Google Images
+      this.load.image('google_signin', 'assets/images/Google_SignIn.PNG');
+      this.load.image('google_signedin', 'assets/images/Google_SignedIn.PNG');
+      this.load.image('google_signout', 'assets/images/Google_SignOut.PNG');
+
       for (var i = 0; i < 25; i++) {
          this.load.image('test' + i, 'assets/images/cookie_cartoon.png');
       }

@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+
+    <meta name="google-signin-client_id" content="58178263211-vr32g2opcjl8erdru8icnfimgm48ufhf.apps.googleusercontent.com" />
+    <!--<meta name="google-signin-client_id" content="767840475018-tk8196blk46nngdfluhto0j46cqdqjdd.apps.googleusercontent.com" />-->
+    <meta name="google-signin-cookiepolicy" content="single_host_origin" />
+    <meta name="google-signin-callback" content="signinCallback" />
+    <meta name="google-signin-scope" content="https://www.googleapis.com/auth/games" />
+
+    <title>Cookie Clicker</title>
     <style type="text/css">
         body {
             margin: 0;
@@ -16,10 +23,42 @@
             image-rendering: auto !important;
             height: 100vh;
         }
+
+        .g-signin2 {
+            display: none;
+        }
     </style>
 </head>
-<body>    
+<body>
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="./node_modules/phaser/dist/phaser.js"></script>
     <script src="build/project.bundle.js" charset="utf-8"></script>
+
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+    <script type="text/javascript">
+        function signinCallback(auth) {
+            console.log(auth);
+        }
+
+        
+        var usuario;
+
+        function onSignIn(user) {
+
+            var googleProfile = user.getBasicProfile();
+
+            var profile = {
+                id: googleProfile.getId(),
+                name: googleProfile.getName(),
+                image: googleProfile.getImageUrl(),
+                email: googleProfile.getEmail()
+            };
+
+            usuario = profile;
+        }
+        
+    </script>
 </body>
 </html>

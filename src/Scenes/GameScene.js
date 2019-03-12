@@ -8,6 +8,7 @@ var score = 0;
 var multiplicator = 1;
 var biteSound = [];
 var pausa = false;
+var loggedIn = false;
 
 export default class GameScene extends Phaser.Scene {
 	constructor(key) {
@@ -75,6 +76,67 @@ export default class GameScene extends Phaser.Scene {
          var r = Math.floor((Math.random() * 2));
          biteSound[r].play();
          score++;
+
+         var authInstance = gapi.auth2.getAuthInstance();
+
+         if (authInstance.isSignedIn.Ab) {
+            gapi.client.load("games", "v1", (response) => {
+
+               if (score == 100) {
+                  alert('¡Has desbloqueado el logro: "100 Cookies"!');
+
+                  var request = gapi.client.games.achievements
+                  .unlock({
+                     achievementId: "CgkIq7HH3dgBEAIQAQ"
+                  });
+
+                  request.execute(function(response) {
+                     console.log(response)
+                  })
+               }
+
+               if (score == 250) {
+                  alert('¡Has desbloqueado el logro: "250 Cookies"!');
+
+                  var request = gapi.client.games.achievements
+                  .unlock({
+                     achievementId: "CgkIq7HH3dgBEAIQAg"
+                  });
+
+                  request.execute(function(response) {
+                     console.log(response)
+                  })
+               }
+
+               if (score == 500) {
+                  alert('¡Has desbloqueado el logro: "500 Cookies"!');
+
+                  var request = gapi.client.games.achievements
+                  .unlock({
+                     achievementId: "CgkIq7HH3dgBEAIQAw"
+                  });
+
+                  request.execute(function(response) {
+                     console.log(response)
+                  })
+               }
+
+               if (score == 1000) {
+                  alert('¡Has desbloqueado el logro: "1000 Cookies"!');
+
+                  var request = gapi.client.games.achievements
+                  .unlock({
+                     achievementId: "CgkIq7HH3dgBEAIQBA"
+                  });
+
+                  request.execute(function(response) {
+                     console.log(response)
+                  })
+               }
+
+            });
+         }
+
          txtScore.setText("Galletas: " + score);
       }, this);
 
@@ -123,6 +185,7 @@ export default class GameScene extends Phaser.Scene {
             ease: 'Linear'
          });
       }, this);
+
 	}
 
    createGraphic(color, alpha, posX, posY, x, y) {
